@@ -1,122 +1,122 @@
 [
   {
-    "subject": "Chemistry",
-    "question": "An SN2 reaction on a chiral center results in?",
-    "correct_letter": "C",
-    "explanation": "A concerted backside attack leads to stereochemical inversion.",
-    "options": {
-      "A": "Racemization",
-      "B": "Retention of configuration",
-      "C": "Stereochemical inversion",
-      "D": "Elimination"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "What is the thermodynamic consequence of the Jahn-Teller effect?",
-    "correct_letter": "B",
-    "explanation": "Geometric distortion to lower the symmetry and energy.",
-    "options": {
-      "A": "Spin pairing",
-      "B": "Geometric distortion",
-      "C": "Symmetry stability",
-      "D": "d-d suppression"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "Identify the strongest Bronsted acid among the following.",
-    "correct_letter": "A",
-    "explanation": "HClO4 is the strongest due to resonance stabilization of its conjugate base.",
-    "options": {
-      "A": "HClO4",
-      "B": "H2SO4",
-      "C": "HCl",
-      "D": "HNO3"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "Markovnikov's rule is primarily driven by?",
-    "correct_letter": "B",
-    "explanation": "The relative stability of carbocation intermediates.",
-    "options": {
-      "A": "Steric hindrance",
-      "B": "Carbocation stability",
-      "C": "Electronegativity",
-      "D": "Isotope effects"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "What is the primary function of a Grignard reagent?",
+    "subject": "Physics",
+    "question": "What defines a topological insulator?",
     "correct_letter": "D",
-    "explanation": "It acts as a strong nucleophile to form carbon-carbon bonds.",
+    "explanation": "It behaves as an insulator in its interior but conducts on its surface.",
     "options": {
-      "A": "Oxidation",
-      "B": "Reduction",
-      "C": "Radical initiation",
-      "D": "Nucleophilic addition"
+      "A": "Total vacuum",
+      "B": "Superconductivity",
+      "C": "Metallic bulk",
+      "D": "Insulating bulk, conducting surface"
     }
   },
   {
-    "subject": "Chemistry",
-    "question": "What does Le Chatelier's Principle predict?",
-    "correct_letter": "C",
-    "explanation": "A system at equilibrium will shift to counteract a change.",
-    "options": {
-      "A": "Energy conservation",
-      "B": "Electron spin",
-      "C": "System opposes change",
-      "D": "Gas expansion"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "A negative change in Gibbs Free Energy indicates?",
-    "correct_letter": "A",
-    "explanation": "The reaction is thermodynamically spontaneous.",
-    "options": {
-      "A": "Spontaneous reaction",
-      "B": "Endothermic reaction",
-      "C": "System at equilibrium",
-      "D": "Decrease in entropy"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "A Diels-Alder reaction is best classified as?",
-    "correct_letter": "A",
-    "explanation": "It is a [4+2] cycloaddition reaction.",
-    "options": {
-      "A": "A cycloaddition",
-      "B": "A substitution",
-      "C": "An elimination",
-      "D": "A polymerization"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "The primary chemical byproduct of the Haber process is?",
-    "correct_letter": "B",
-    "explanation": "The process combines nitrogen and hydrogen to produce ammonia.",
-    "options": {
-      "A": "Nitrogen",
-      "B": "Ammonia",
-      "C": "Nitric Acid",
-      "D": "Hydrogen"
-    }
-  },
-  {
-    "subject": "Chemistry",
-    "question": "VSEPR theory determines molecular geometry based on?",
+    "subject": "Physics",
+    "question": "The Casimir effect is a macroscopic manifestation of?",
     "correct_letter": "D",
-    "explanation": "Valence shell electron pair repulsion.",
+    "explanation": "Vacuum energy from quantized fields.",
     "options": {
-      "A": "Nuclear forces",
-      "B": "Orbital hybridization",
-      "C": "Electronegativity differences",
-      "D": "Electron repulsion"
+      "A": "Magnetic monopoles",
+      "B": "String theory",
+      "C": "General relativity",
+      "D": "Vacuum energy"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "Hawking radiation is primarily caused by?",
+    "correct_letter": "C",
+    "explanation": "Quantum fluctuations at the event horizon.",
+    "options": {
+      "A": "Black hole explosions",
+      "B": "Nuclear fusion",
+      "C": "Quantum fluctuations at the horizon",
+      "D": "Dark matter decay"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "What is a characteristic of the Zeeman effect?",
+    "correct_letter": "A",
+    "explanation": "The splitting of a spectral line into several components in the presence of a static magnetic field.",
+    "options": {
+      "A": "Spectral line splitting in a B-field",
+      "B": "Color change",
+      "C": "Mass increase",
+      "D": "Velocity shift"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "What is the primary implication of Bell's Theorem?",
+    "correct_letter": "A",
+    "explanation": "It proves quantum mechanics relies on non-locality.",
+    "options": {
+      "A": "Non-local hidden variables",
+      "B": "Faster than light travel",
+      "C": "Cat states",
+      "D": "Measurement error"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "What characterizes a Bose-Einstein Condensate?",
+    "correct_letter": "B",
+    "explanation": "A large fraction of bosons occupy the lowest quantum state.",
+    "options": {
+      "A": "Fermion pairing",
+      "B": "Macroscopic quantum state",
+      "C": "Plasma generation",
+      "D": "Infinite density"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "The Aharonov-Bohm effect demonstrates the physical significance of?",
+    "correct_letter": "C",
+    "explanation": "Electromagnetic potentials over fields in quantum mechanics.",
+    "options": {
+      "A": "Gravity",
+      "B": "Strong force",
+      "C": "Electromagnetic potentials",
+      "D": "Dark energy"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "Larmor precession describes?",
+    "correct_letter": "A",
+    "explanation": "The precession of the magnetic moment of an object about an external magnetic field.",
+    "options": {
+      "A": "Magnetic moment in a B-field",
+      "B": "Planetary orbits",
+      "C": "Electron spinning",
+      "D": "Quark confinement"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "In Compton scattering, what happens to the scattered photon?",
+    "correct_letter": "B",
+    "explanation": "It loses energy and its wavelength increases.",
+    "options": {
+      "A": "Wavelength decreases",
+      "B": "Wavelength increases",
+      "C": "It converts to an electron",
+      "D": "It travels faster"
+    }
+  },
+  {
+    "subject": "Physics",
+    "question": "Noether's theorem states that every differentiable symmetry of the action of a physical system generates:",
+    "correct_letter": "A",
+    "explanation": "A corresponding conservation law.",
+    "options": {
+      "A": "A conservation law",
+      "B": "A new particle",
+      "C": "A singularity",
+      "D": "Time dilation"
     }
   }
 ]
