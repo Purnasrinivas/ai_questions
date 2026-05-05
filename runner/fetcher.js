@@ -1,9 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { config } from './config.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function fetchQuestions(topic) {
     let apiQuestions = [];
@@ -40,8 +35,8 @@ export async function fetchQuestions(topic) {
     let combined = [...apiQuestions, ...getStrictFallbacks()];
     let finalSelection = [];
 
-    if (topic !== 'Random') {
-        // Force strict matching. If Physics is selected, ONLY allow Physics.
+    if (topic && topic !== 'Random') {
+        // Force strict matching.
         let strictFiltered = combined.filter(q => q.subject.toLowerCase().includes(topic.toLowerCase()));
         
         // Remove duplicates just in case
@@ -57,16 +52,12 @@ export async function fetchQuestions(topic) {
         finalSelection = uniqueAll.sort(() => Math.random() - 0.5).slice(0, 10);
     }
 
-    // Save to local cache for the UI to read
-    const dataDir = path.join(__dirname, '../data');
-    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
-    fs.writeFileSync(path.join(dataDir, 'questions.json'), JSON.stringify(finalSelection, null, 2));
-
+    // Return directly to Vercel memory instead of writing to disk
     return finalSelection;
 }
 
 function getStrictFallbacks() {
-    // 30 Guaranteed Questions (10 per topic) to ensure we never run out of specific topics
+    // 30 Guaranteed Questions
     return [
         // --- PHYSICS (10) ---
         { subject: "Physics", question: "What is the primary implication of Bell's Theorem?", correct_letter: "A", explanation: "It proves quantum mechanics relies on non-locality.", options: {A: "Non-local hidden variables", B: "Faster than light travel", C: "Cat states", D: "Measurement error"}},

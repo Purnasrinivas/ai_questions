@@ -1,18 +1,16 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { fetchQuestions } from './fetcher.js';
 import { runSingleQuestion } from './experiment.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-app.use(express.static(path.join(__dirname, '../ui')));
+// Allow server to parse JSON bodies
 app.use(express.json());
 
 app.get('/api/questions', async (req, res) => {
     try {
-        const questions = await fetchQuestions();
+        const topic = req.query.topic || 'Random';
+        const questions = await fetchQuestions(topic);
         res.json({ success: true, questions });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -21,12 +19,8 @@ app.get('/api/questions', async (req, res) => {
 
 app.post('/api/ask-models', async (req, res) => {
     try {
-        console.log(`\n⏳ Request received. Models are thinking step-by-step... (This can take 15 seconds)`);
         const { question } = req.body;
-        
         const results = await runSingleQuestion(question);
-        
-        console.log(`✅ Models finished thinking! Sending data to UI.`);
         res.json({ success: true, results });
     } catch (err) {
         console.error(`❌ Backend Error:`, err.message);
@@ -34,5 +28,5 @@ app.post('/api/ask-models', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Interactive Showdown running at http://localhost:${PORT}`));
+// CRITICAL FOR VERCEL: Export the app instead of using app.listen()
+export default app;
