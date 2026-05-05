@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhD Science Showdown: Dual Mode</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="container glass-panel">
+        
+        <div id="captchaScreen" class="captcha-wrapper">
+            <h2>🛡️ Extreme Protocol Verification</h2>
+            <p class="subtitle" style="margin-bottom: 30px;">Decipher the distorted sequence. <strong style="color: #f85149;">Warning: Case-Sensitive.</strong></p>
+            
+            <div class="captcha-box" id="captchaBox" style="max-width: 400px;">
+                <canvas id="captchaCanvas" width="320" height="100"></canvas>
+                <div class="captcha-controls">
+                    <input type="text" id="captchaInput" placeholder="Exact case required..." autocomplete="off">
+                    <button class="icon-btn" id="refreshCaptcha" title="Generate New Sequence">🔄</button>
+                </div>
+                <button class="primary-btn pulse" id="verifyCaptchaBtn" style="width: 100%; margin-top: 15px;">Verify Cognition</button>
+                <p id="captchaError" class="captcha-error hidden">Cognition mismatch. Try again.</p>
+            </div>
+        </div>
+
+        <header id="landingPage" class="hidden">
+            <h1>PhD Science Showdown</h1>
+            <p class="subtitle">Benchmarking LLM Reasoning: Claude vs GPT</p>
+            <div class="mode-selection">
+                <div class="mode-card-select">
+                    <h3>Interactive Experiment</h3>
+                    <p>Test your own PhD knowledge against the AI models. Manual step-by-step control.</p>
+                    
+                    <select id="topicDropdown" class="topic-select">
+                        <option value="Random">Mix: All Topics</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                    </select>
+
+                    <button class="primary-btn" onclick="initApp('interactive')">Start Experiment</button>
+                </div>
+                <div class="mode-card-select">
+                    <h3>Automated Battle Mode</h3>
+                    <p>Hands-off evaluation. Models compete across 10 random questions automatically.</p>
+                    <button class="action-btn" onclick="initApp('battle')">Start Random AI Battle</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="mainApp" class="hidden">
+            <div id="scoreSection" class="scoreboard">
+                <div class="score-card human" id="humanScoreCard">
+                    👤 Human Baseline:<br><strong id="scoreHuman">0</strong>/10
+                </div>
+                <div class="score-card claude">
+                    🟠 Claude 3 Haiku:<br><strong id="scoreClaude">0</strong>/10
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="toggleClaude" onchange="updateThinkVisibility('claude')">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">Show Thinking</span>
+                    </div>
+                </div>
+                <div class="score-card gpt">
+                    🟢 GPT-4o:<br><strong id="scoreGpt">0</strong>/10
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="toggleGpt" onchange="updateThinkVisibility('gpt')">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">Show Thinking</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="activeSection">
+                <div class="progress-bar"><div id="progressFill"></div></div>
+                <div class="question-header">
+                    <h3 id="questionTracker">Loading...</h3>
+                    <button id="nextBtn" class="secondary-btn hidden">Next Question ▶</button>
+                </div>
+                <div class="question-box">
+                    <h2 id="qText"></h2>
+                    <div class="interactive-options" id="qOptions"></div>
+                </div>
+                <div id="humanResult" class="hidden human-feedback"></div>
+                <div id="truthSection" class="truth-box hidden">
+                    <div class="truth-header">
+                        <h2>✅ Ground Truth: <span id="correctLetter"></span></h2>
+                        <a id="learnMoreLink" href="#" target="_blank" class="learn-more-btn">🔍 Research Topic</a>
+                    </div>
+                    <p id="explanationText"></p>
+                </div>
+                <div class="model-grid">
+                    <div class="model-card claude" id="cardClaude">
+                        <h3>Claude 3 Haiku</h3>
+                        <div class="status-indicator" id="statusClaude">⏳ Waiting...</div>
+                        <div id="thinkBoxClaude" class="thinking-box hidden"></div>
+                        <div class="answer-data hidden" id="dataClaude">
+                            <p class="big-answer">Output: <strong id="ansClaude"></strong></p>
+                            <p>Confidence: <strong id="confClaude"></strong>%</p>
+                            <p class="reason" id="reasonClaude"></p>
+                        </div>
+                    </div>
+                    <div class="model-card gpt" id="cardGpt">
+                        <h3>GPT-4o</h3>
+                        <div class="status-indicator" id="statusGpt">⏳ Waiting...</div>
+                        <div id="thinkBoxGpt" class="thinking-box hidden"></div>
+                        <div class="answer-data hidden" id="dataGpt">
+                            <p class="big-answer">Output: <strong id="ansGpt"></strong></p>
+                            <p>Confidence: <strong id="confGpt"></strong>%</p>
+                            <p class="reason" id="reasonGpt"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="verdictSection" class="hidden verdict-box">
+            <h2 id="verdictText"></h2>
+            <button onclick="location.reload()" class="primary-btn pulse">🔄 Back to Menu</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

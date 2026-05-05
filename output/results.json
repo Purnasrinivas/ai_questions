@@ -1,0 +1,20 @@
+{
+  "scores": {
+    "claude": {
+      "correct": 10,
+      "percentage": 100
+    },
+    "gpt": {
+      "correct": 10,
+      "percentage": 100
+    },
+    "gemini": {
+      "correct": 0,
+      "percentage": 0
+    }
+  },
+  "winner": {
+    "name": "claude",
+    "score": 100
+  }
+}

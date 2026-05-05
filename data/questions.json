@@ -1,0 +1,122 @@
+[
+  {
+    "subject": "Chemistry",
+    "question": "An SN2 reaction on a chiral center results in?",
+    "correct_letter": "C",
+    "explanation": "A concerted backside attack leads to stereochemical inversion.",
+    "options": {
+      "A": "Racemization",
+      "B": "Retention of configuration",
+      "C": "Stereochemical inversion",
+      "D": "Elimination"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "What is the thermodynamic consequence of the Jahn-Teller effect?",
+    "correct_letter": "B",
+    "explanation": "Geometric distortion to lower the symmetry and energy.",
+    "options": {
+      "A": "Spin pairing",
+      "B": "Geometric distortion",
+      "C": "Symmetry stability",
+      "D": "d-d suppression"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "Identify the strongest Bronsted acid among the following.",
+    "correct_letter": "A",
+    "explanation": "HClO4 is the strongest due to resonance stabilization of its conjugate base.",
+    "options": {
+      "A": "HClO4",
+      "B": "H2SO4",
+      "C": "HCl",
+      "D": "HNO3"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "Markovnikov's rule is primarily driven by?",
+    "correct_letter": "B",
+    "explanation": "The relative stability of carbocation intermediates.",
+    "options": {
+      "A": "Steric hindrance",
+      "B": "Carbocation stability",
+      "C": "Electronegativity",
+      "D": "Isotope effects"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "What is the primary function of a Grignard reagent?",
+    "correct_letter": "D",
+    "explanation": "It acts as a strong nucleophile to form carbon-carbon bonds.",
+    "options": {
+      "A": "Oxidation",
+      "B": "Reduction",
+      "C": "Radical initiation",
+      "D": "Nucleophilic addition"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "What does Le Chatelier's Principle predict?",
+    "correct_letter": "C",
+    "explanation": "A system at equilibrium will shift to counteract a change.",
+    "options": {
+      "A": "Energy conservation",
+      "B": "Electron spin",
+      "C": "System opposes change",
+      "D": "Gas expansion"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "A negative change in Gibbs Free Energy indicates?",
+    "correct_letter": "A",
+    "explanation": "The reaction is thermodynamically spontaneous.",
+    "options": {
+      "A": "Spontaneous reaction",
+      "B": "Endothermic reaction",
+      "C": "System at equilibrium",
+      "D": "Decrease in entropy"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "A Diels-Alder reaction is best classified as?",
+    "correct_letter": "A",
+    "explanation": "It is a [4+2] cycloaddition reaction.",
+    "options": {
+      "A": "A cycloaddition",
+      "B": "A substitution",
+      "C": "An elimination",
+      "D": "A polymerization"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "The primary chemical byproduct of the Haber process is?",
+    "correct_letter": "B",
+    "explanation": "The process combines nitrogen and hydrogen to produce ammonia.",
+    "options": {
+      "A": "Nitrogen",
+      "B": "Ammonia",
+      "C": "Nitric Acid",
+      "D": "Hydrogen"
+    }
+  },
+  {
+    "subject": "Chemistry",
+    "question": "VSEPR theory determines molecular geometry based on?",
+    "correct_letter": "D",
+    "explanation": "Valence shell electron pair repulsion.",
+    "options": {
+      "A": "Nuclear forces",
+      "B": "Orbital hybridization",
+      "C": "Electronegativity differences",
+      "D": "Electron repulsion"
+    }
+  }
+]

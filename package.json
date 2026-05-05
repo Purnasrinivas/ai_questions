@@ -1,0 +1,14 @@
+{
+  "name": "gpqa-showdown",
+  "version": "1.0.0",
+  "description": "PhD Science Showdown GPQA Live Experiment",
+  "main": "runner/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node runner/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

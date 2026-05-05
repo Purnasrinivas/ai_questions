@@ -1,0 +1,103 @@
+{
+  "overallRankings": [
+    {
+      "model": "GPT-5.2",
+      "score": 100,
+      "avgLatency": 8700,
+      "adherenceScore": 100
+    },
+    {
+      "model": "Claude 3 Haiku",
+      "score": 50,
+      "avgLatency": 3108,
+      "adherenceScore": 100
+    },
+    {
+      "model": "Gemini 3.1 Pro",
+      "score": 0,
+      "avgLatency": 85,
+      "adherenceScore": 0
+    },
+    {
+      "model": "Gemini 3 Pro",
+      "score": 0,
+      "avgLatency": 63,
+      "adherenceScore": 0
+    }
+  ],
+  "rawResults": [
+    {
+      "model": "Gemini 3.1 Pro",
+      "language": "english",
+      "subject": "Advanced Logic",
+      "isCorrect": false,
+      "latencyMs": 48,
+      "adherence": false,
+      "reasoningLength": 9
+    },
+    {
+      "model": "Gemini 3.1 Pro",
+      "language": "french",
+      "subject": "Astrophysics",
+      "isCorrect": false,
+      "latencyMs": 122,
+      "adherence": false,
+      "reasoningLength": 9
+    },
+    {
+      "model": "Gemini 3 Pro",
+      "language": "english",
+      "subject": "Advanced Logic",
+      "isCorrect": false,
+      "latencyMs": 31,
+      "adherence": false,
+      "reasoningLength": 9
+    },
+    {
+      "model": "Gemini 3 Pro",
+      "language": "french",
+      "subject": "Astrophysics",
+      "isCorrect": false,
+      "latencyMs": 95,
+      "adherence": false,
+      "reasoningLength": 9
+    },
+    {
+      "model": "Claude 3 Haiku",
+      "language": "english",
+      "subject": "Advanced Logic",
+      "isCorrect": false,
+      "latencyMs": 4257,
+      "adherence": true,
+      "reasoningLength": 1182
+    },
+    {
+      "model": "Claude 3 Haiku",
+      "language": "french",
+      "subject": "Astrophysics",
+      "isCorrect": true,
+      "latencyMs": 1959,
+      "adherence": true,
+      "reasoningLength": 620
+    },
+    {
+      "model": "GPT-5.2",
+      "language": "english",
+      "subject": "Advanced Logic",
+      "isCorrect": true,
+      "latencyMs": 8809,
+      "adherence": true,
+      "reasoningLength": 1177
+    },
+    {
+      "model": "GPT-5.2",
+      "language": "french",
+      "subject": "Astrophysics",
+      "isCorrect": true,
+      "latencyMs": 8591,
+      "adherence": true,
+      "reasoningLength": 1194
+    }
+  ],
+  "timestamp": "2026-05-05T04:53:23.762Z"
+}
