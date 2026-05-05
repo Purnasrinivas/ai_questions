@@ -1,13 +1,8 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { fetchQuestions } from './fetcher.js';
 import { runSingleQuestion } from './experiment.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-
-app.use(express.static(path.join(__dirname, '../ui')));
 app.use(express.json());
 
 app.get('/api/questions', async (req, res) => {
@@ -31,5 +26,5 @@ app.post('/api/ask-models', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Interactive Showdown running at http://localhost:${PORT}`));
+// CRITICAL FOR VERCEL: Export the app instead of using app.listen()
+export default app;

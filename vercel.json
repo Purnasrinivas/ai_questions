@@ -1,13 +1,8 @@
 {
-    "functions": {
-      "runner/server.js": {
-        "includeFiles": "runner/*.js"
-      }
-    },
     "rewrites": [
       {
         "source": "/api/(.*)",
-        "destination": "/runner/server.js"
+        "destination": "/api/index.js"
       },
       {
         "source": "/(.*)",
