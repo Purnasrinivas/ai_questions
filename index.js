@@ -1,6 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
+
+// Fix for __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // --- 1. CONFIGURATION ---
 const config = {
@@ -97,17 +104,7 @@ function getStrictFallbacks() {
         { subject: "Physics", question: "What is the primary implication of Bell's Theorem?", correct_letter: "A", explanation: "It proves quantum mechanics relies on non-locality.", options: {A: "Non-local hidden variables", B: "Faster than light travel", C: "Cat states", D: "Measurement error"}},
         { subject: "Physics", question: "Hawking radiation is primarily caused by?", correct_letter: "C", explanation: "Quantum fluctuations at the event horizon.", options: {A: "Black hole explosions", B: "Nuclear fusion", C: "Quantum fluctuations at the horizon", D: "Dark matter decay"}},
         { subject: "Physics", question: "What defines a topological insulator?", correct_letter: "D", explanation: "It behaves as an insulator in its interior but conducts on its surface.", options: {A: "Total vacuum", B: "Superconductivity", C: "Metallic bulk", D: "Insulating bulk, conducting surface"}},
-        { subject: "Physics", question: "What is a characteristic of the Zeeman effect?", correct_letter: "A", explanation: "The splitting of a spectral line into several components in the presence of a static magnetic field.", options: {A: "Spectral line splitting in a B-field", B: "Color change", C: "Mass increase", D: "Velocity shift"}},
-        { subject: "Physics", question: "In Compton scattering, what happens to the scattered photon?", correct_letter: "B", explanation: "It loses energy and its wavelength increases.", options: {A: "Wavelength decreases", B: "Wavelength increases", C: "It converts to an electron", D: "It travels faster"}},
-        { subject: "Physics", question: "The Aharonov-Bohm effect demonstrates the physical significance of?", correct_letter: "C", explanation: "Electromagnetic potentials over fields in quantum mechanics.", options: {A: "Gravity", B: "Strong force", C: "Electromagnetic potentials", D: "Dark energy"}},
-        { subject: "Physics", question: "Noether's theorem states that every differentiable symmetry of the action of a physical system generates:", correct_letter: "A", explanation: "A corresponding conservation law.", options: {A: "A conservation law", B: "A new particle", C: "A singularity", D: "Time dilation"}},
-        { subject: "Chemistry", question: "What is the thermodynamic consequence of the Jahn-Teller effect?", correct_letter: "B", explanation: "Geometric distortion to lower the symmetry and energy.", options: {A: "Spin pairing", B: "Geometric distortion", C: "Symmetry stability", D: "d-d suppression"}},
         { subject: "Chemistry", question: "Identify the strongest Bronsted acid among the following.", correct_letter: "A", explanation: "HClO4 is the strongest due to resonance stabilization of its conjugate base.", options: {A: "HClO4", B: "H2SO4", C: "HCl", D: "HNO3"}},
-        { subject: "Chemistry", question: "The primary chemical byproduct of the Haber process is?", correct_letter: "B", explanation: "The process combines nitrogen and hydrogen to produce ammonia.", options: {A: "Nitrogen", B: "Ammonia", C: "Nitric Acid", D: "Hydrogen"}},
-        { subject: "Chemistry", question: "What does Le Chatelier's Principle predict?", correct_letter: "C", explanation: "A system at equilibrium will shift to counteract a change.", options: {A: "Energy conservation", B: "Electron spin", C: "System opposes change", D: "Gas expansion"}},
-        { subject: "Biology", question: "Which enzyme relieves torsional strain ahead of the replication fork?", correct_letter: "C", explanation: "DNA Gyrase reduces supercoiling.", options: {A: "Helicase", B: "Primase", C: "DNA Gyrase", D: "Ligase"}},
-        { subject: "Biology", question: "What is the primary function of the spliceosome?", correct_letter: "B", explanation: "It removes introns from pre-mRNA.", options: {A: "Protein translation", B: "Intron removal", C: "5' Capping", D: "Polyadenylation"}},
-        { subject: "Biology", question: "What is the biochemical role of reverse transcriptase?", correct_letter: "A", explanation: "It synthesizes DNA from an RNA template.", options: {A: "RNA to DNA transcription", B: "DNA to RNA transcription", C: "Protein synthesis", D: "Lipid breakdown"}},
         { subject: "Biology", question: "In its native bacterial environment, what is the function of CRISPR?", correct_letter: "D", explanation: "It acts as an adaptive immune system against phages.", options: {A: "Photosynthesis regulation", B: "Meiotic cell division", C: "Protein folding", D: "Adaptive viral defense"}}
     ];
 }
@@ -155,11 +152,15 @@ async function fetchQuestions(topic) {
 // --- 5. EXPRESS ROUTING ---
 const app = express();
 
-// Serve the frontend files from the public folder
-app.use(express.static('public'));
+// ABSOLUTE PATH STATIC SERVING - Fix for Vercel 404
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Parse JSON bodies
 app.use(express.json());
+
+// Catch-all for the root to serve index.html explicitly
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.get('/api/questions', async (req, res) => {
     try {
@@ -181,5 +182,4 @@ app.post('/api/ask-models', async (req, res) => {
     }
 });
 
-// Vercel requires exporting the app directly
 export default app;
