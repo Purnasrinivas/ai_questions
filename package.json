@@ -2,7 +2,7 @@
   "name": "gpqa-showdown",
   "version": "1.0.0",
   "description": "PhD Science Showdown GPQA Live Experiment",
-  "main": "runner/server.js",
+"main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node runner/server.js"
