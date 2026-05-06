@@ -1,12 +1,16 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/(.*)",
-        "destination": "/index.js"
-      },
-      {
-        "source": "/(.*)",
-        "destination": "/ui/$1"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/",
+      "destination": "/ui/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/ui/$1"
+    }
+  ]
+}
