@@ -5,8 +5,8 @@
 "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node runner/server.js"
-  },
+  "start": "node api/index.js"
+},
   "dependencies": {
     "dotenv": "^16.6.1",
     "express": "^4.22.1"
