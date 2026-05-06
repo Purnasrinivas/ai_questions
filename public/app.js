@@ -169,6 +169,11 @@ function loadQuestion() {
     humanSelection = null;
     const q = questions[currentQIndex];
     
+    // Updates "Question 1 of 10" or "Question 1 of 5" automatically
+    if (document.getElementById('questionTracker')) {
+        document.getElementById('questionTracker').innerText = `Question ${currentQIndex + 1} of ${questions.length} · ${q.subject}`;
+    }
+    
     document.getElementById('truthSection')?.classList.add('hidden');
     document.getElementById('humanResult')?.classList.add('hidden');
     document.getElementById('nextBtn')?.classList.add('hidden');
@@ -331,6 +336,6 @@ function showFinalVerdict() {
     document.getElementById('activeSection')?.classList.add('hidden');
     document.getElementById('verdictSection')?.classList.remove('hidden');
     if (document.getElementById('verdictText')) {
-        document.getElementById('verdictText').innerText = `Tournament Complete! \n Claude: ${scores.claude}/10 | GPT: ${scores.gpt}/10 ${appMode === 'interactive' ? `| You: ${scores.human}/10` : ''}`;
+        document.getElementById('verdictText').innerText = `Tournament Complete! \n Claude: ${scores.claude}/${questions.length} | GPT: ${scores.gpt}/${questions.length} ${appMode === 'interactive' ? `| You: ${scores.human}/${questions.length}` : ''}`;
     }
 }
