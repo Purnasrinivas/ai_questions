@@ -1,10 +1,14 @@
 // --- EXTREME CANVAS CAPTCHA LOGIC ---
 let currentCaptchaStr = "";
+let failedAttempts = 0; // TRACKER FOR ROASTING LOGIC
 
 document.addEventListener('DOMContentLoaded', () => {
     initCaptcha();
 
-    document.getElementById('refreshCaptcha').addEventListener('click', initCaptcha);
+    document.getElementById('refreshCaptcha').addEventListener('click', () => {
+        initCaptcha();
+    });
+    
     document.getElementById('verifyCaptchaBtn').addEventListener('click', verifyCaptcha);
     
     document.getElementById('captchaInput').addEventListener('keypress', function (e) {
@@ -19,103 +23,83 @@ function initCaptcha() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Mixed case charset (removed look-alikes like I, l, 1, 0, O)
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
     currentCaptchaStr = "";
-    const captchaLength = 7; // 7 characters for brutal difficulty
+    const captchaLength = 7; 
     for (let i = 0; i < captchaLength; i++) {
         currentCaptchaStr += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-    // 1. Heavy Noise Dots
+    // Noise and Distorted Text Rendering
     for (let i = 0; i < 150; i++) {
-        ctx.fillStyle = `rgba(${Math.random()*255}, ${Math.random()*255}, 255, ${Math.random() * 0.5})`;
+        ctx.fillStyle = `rgba(${Math.random()*255}, ${Math.random()*255}, 255, ${Math.random() * 0.3})`;
         ctx.beginPath();
-        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
         ctx.fill();
     }
 
-    // 2. Swirling Bezier Curve Interference
-    for (let i = 0; i < 12; i++) {
-        ctx.strokeStyle = `rgba(${100 + Math.random()*155}, ${100 + Math.random()*155}, 255, 0.6)`;
-        ctx.lineWidth = 1 + Math.random() * 4;
+    for (let i = 0; i < 10; i++) {
+        ctx.strokeStyle = `rgba(100, 100, 255, 0.3)`;
         ctx.beginPath();
         ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.bezierCurveTo(
-            Math.random() * canvas.width, Math.random() * canvas.height,
-            Math.random() * canvas.width, Math.random() * canvas.height,
-            Math.random() * canvas.width, Math.random() * canvas.height
-        );
+        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
         ctx.stroke();
     }
 
-    // 3. Extreme Distorted Text Rendering
-    const fonts = ["Courier New", "Georgia", "Impact", "Times New Roman", "Verdana"];
-    
+    const fonts = ["Courier New", "Georgia", "Impact", "Verdana"];
     for (let i = 0; i < currentCaptchaStr.length; i++) {
         const char = currentCaptchaStr[i];
         ctx.save();
-        
-        // Tighter spacing to force overlap
-        const xPos = 35 + (i * 35) + (Math.random() * 15 - 7.5);
+        const xPos = 35 + (i * 40);
         const yPos = 50 + (Math.random() * 20 - 10); 
         ctx.translate(xPos, yPos);
-        
-        // Extreme Rotation (up to ~45 degrees)
-        const rotAngle = (Math.random() - 0.5) * 1.5; 
-        ctx.rotate(rotAngle);
-        
-        // Random Squishing/Stretching
-        const scaleX = 0.7 + Math.random() * 0.6;
-        const scaleY = 0.7 + Math.random() * 0.6;
-        ctx.scale(scaleX, scaleY);
-        
-        // Random Font and Size per character
-        const fontSize = 35 + Math.random() * 20;
-        ctx.font = `bold ${fontSize}px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
-        
-        // Colors that bleed into the background lines
-        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.85)' : 'rgba(88, 166, 255, 0.85)';
-        
-        // Confusing drop shadows
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur = Math.random() * 6;
-        ctx.shadowOffsetX = Math.random() * 4 - 2;
-        ctx.shadowOffsetY = Math.random() * 4 - 2;
-
+        ctx.rotate((Math.random() - 0.5) * 0.8);
+        ctx.font = `bold ${30 + Math.random() * 15}px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
+        ctx.fillStyle = '#58a6ff';
         ctx.fillText(char, -15, 0); 
         ctx.restore();
     }
 
-    // Notice we DO NOT use text-transform uppercase in CSS anymore.
     document.getElementById('captchaInput').value = "";
-    document.getElementById('captchaInput').style.textTransform = "none";
-    document.getElementById('captchaError').classList.add('hidden');
-    document.getElementById('captchaBox').classList.remove('jiggle');
 }
 
 function verifyCaptcha() {
-    // REMOVED .toUpperCase(). The user must match exactly.
     const input = document.getElementById('captchaInput').value.trim();
     const box = document.getElementById('captchaBox');
     const errorTxt = document.getElementById('captchaError');
+    const btn = document.getElementById('verifyCaptchaBtn');
 
     if (input === currentCaptchaStr) {
-        const btn = document.getElementById('verifyCaptchaBtn');
-        btn.classList.add('verified');
-        btn.innerText = "Access Granted";
-        btn.style.background = "#3fb950";
+        // --- WINNER LOGIC ---
+        if (failedAttempts === 0) {
+            btn.innerText = "Access Granted. You're remarkably sharp!";
+            btn.style.background = "#238636";
+        } else {
+            btn.innerText = "Verification Successful";
+            btn.style.background = "#3fb950";
+        }
         
+        btn.classList.add('verified');
         setTimeout(() => {
             document.getElementById('captchaScreen').classList.add('hidden');
             document.getElementById('landingPage').classList.remove('hidden');
-        }, 600);
+        }, 800);
     } else {
+        // --- FAILURE / ROASTING LOGIC ---
+        failedAttempts++;
         errorTxt.classList.remove('hidden');
+        
+        if (failedAttempts >= 3) {
+            errorTxt.innerText = "⚠️ Protocol Error: I'm beginning to doubt your biological origin...";
+            errorTxt.style.color = "#ff7b72";
+        } else {
+            errorTxt.innerText = "Cognition mismatch. Try again.";
+        }
+
         box.classList.remove('jiggle');
         void box.offsetWidth; 
         box.classList.add('jiggle');
-        initCaptcha(); // Generate new hard one on failure
+        initCaptcha(); 
     }
 }
 
@@ -168,11 +152,6 @@ function loadQuestion() {
     isLocked = false;
     humanSelection = null;
     const q = questions[currentQIndex];
-    
-    // Updates "Question 1 of 10" or "Question 1 of 5" automatically
-    if (document.getElementById('questionTracker')) {
-        document.getElementById('questionTracker').innerText = `Question ${currentQIndex + 1} of ${questions.length} · ${q.subject}`;
-    }
     
     document.getElementById('truthSection')?.classList.add('hidden');
     document.getElementById('humanResult')?.classList.add('hidden');
