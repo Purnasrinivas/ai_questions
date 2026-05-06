@@ -1,6 +1,5 @@
-// --- EXTREME CANVAS CAPTCHA LOGIC ---
 let currentCaptchaStr = "";
-let failedAttempts = 0; // TRACKER FOR ROASTING LOGIC
+let failedAttempts = 0; 
 
 document.addEventListener('DOMContentLoaded', () => {
     initCaptcha();
@@ -14,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('captchaInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') verifyCaptcha();
     });
+
+    // Reset input style on type
+    document.getElementById('captchaInput').addEventListener('input', function() {
+        this.classList.remove('jiggle');
+        document.getElementById('captchaError').classList.add('hidden');
+    });
 });
 
 function initCaptcha() {
@@ -23,6 +28,7 @@ function initCaptcha() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Mixed case charset
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
     currentCaptchaStr = "";
     const captchaLength = 7; 
@@ -30,53 +36,54 @@ function initCaptcha() {
         currentCaptchaStr += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-    // Noise and Distorted Text Rendering
-    for (let i = 0; i < 150; i++) {
-        ctx.fillStyle = `rgba(${Math.random()*255}, ${Math.random()*255}, 255, ${Math.random() * 0.3})`;
+    // Background Distortions
+    for (let i = 0; i < 120; i++) {
+        ctx.fillStyle = `rgba(${Math.random()*100}, ${Math.random()*150}, 255, ${Math.random() * 0.2})`;
         ctx.beginPath();
-        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
         ctx.fill();
-    }
-
-    for (let i = 0; i < 10; i++) {
-        ctx.strokeStyle = `rgba(100, 100, 255, 0.3)`;
-        ctx.beginPath();
-        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.stroke();
     }
 
     const fonts = ["Courier New", "Georgia", "Impact", "Verdana"];
     for (let i = 0; i < currentCaptchaStr.length; i++) {
         const char = currentCaptchaStr[i];
         ctx.save();
-        const xPos = 35 + (i * 40);
+        const xPos = 40 + (i * 38);
         const yPos = 50 + (Math.random() * 20 - 10); 
         ctx.translate(xPos, yPos);
-        ctx.rotate((Math.random() - 0.5) * 0.8);
-        ctx.font = `bold ${30 + Math.random() * 15}px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
-        ctx.fillStyle = '#58a6ff';
+        ctx.rotate((Math.random() - 0.5) * 0.9);
+        
+        // Random scale for extra difficulty
+        const scale = 0.8 + Math.random() * 0.4;
+        ctx.scale(scale, scale);
+
+        ctx.font = `bold 36px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
+        ctx.fillStyle = i % 2 === 0 ? '#58a6ff' : '#ffffff';
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 4;
+        
         ctx.fillText(char, -15, 0); 
         ctx.restore();
     }
 
-    document.getElementById('captchaInput').value = "";
+    const inputField = document.getElementById('captchaInput');
+    inputField.value = "";
+    inputField.style.textTransform = "none"; // Ensure CSS doesn't override the look
 }
 
 function verifyCaptcha() {
-    const input = document.getElementById('captchaInput').value.trim();
+    const inputField = document.getElementById('captchaInput');
+    const input = inputField.value.trim();
     const box = document.getElementById('captchaBox');
     const errorTxt = document.getElementById('captchaError');
     const btn = document.getElementById('verifyCaptchaBtn');
 
+    // Case-sensitive check
     if (input === currentCaptchaStr) {
-        // --- WINNER LOGIC ---
+        failedAttempts = 0;
         if (failedAttempts === 0) {
             btn.innerText = "Access Granted. You're remarkably sharp!";
             btn.style.background = "#238636";
-        } else {
-            btn.innerText = "Verification Successful";
-            btn.style.background = "#3fb950";
         }
         
         btn.classList.add('verified');
@@ -85,7 +92,6 @@ function verifyCaptcha() {
             document.getElementById('landingPage').classList.remove('hidden');
         }, 800);
     } else {
-        // --- FAILURE / ROASTING LOGIC ---
         failedAttempts++;
         errorTxt.classList.remove('hidden');
         
@@ -93,12 +99,11 @@ function verifyCaptcha() {
             errorTxt.innerText = "⚠️ Protocol Error: I'm beginning to doubt your biological origin...";
             errorTxt.style.color = "#ff7b72";
         } else {
-            errorTxt.innerText = "Cognition mismatch. Try again.";
+            errorTxt.innerText = "Cognition mismatch. Check your case and try again.";
         }
 
-        box.classList.remove('jiggle');
-        void box.offsetWidth; 
-        box.classList.add('jiggle');
+        // Visual feedback for error
+        inputField.classList.add('jiggle');
         initCaptcha(); 
     }
 }
