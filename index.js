@@ -154,6 +154,11 @@ async function fetchQuestions(topic) {
 
 // --- 5. EXPRESS ROUTING ---
 const app = express();
+
+// Serve the frontend files from the public folder
+app.use(express.static('public'));
+
+// Parse JSON bodies
 app.use(express.json());
 
 app.get('/api/questions', async (req, res) => {
