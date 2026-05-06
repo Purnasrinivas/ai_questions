@@ -11,19 +11,37 @@ const __dirname = path.dirname(__filename);
 const config = {
     openRouterUrl: "https://openrouter.ai/api/v1/chat/completions",
     apiKey: process.env.OPENROUTER_API_KEY,
-    hfToken: process.env.HF_TOKEN,
     models: {
-        claude: { id: "anthropic/claude-3-haiku", color: "#e0844a" }, 
-        gpt: { id: "openai/gpt-4o", color: "#74c69d" }
+        claude: { id: "anthropic/claude-3-haiku" }, 
+        gpt: { id: "openai/gpt-4o" }
     },
-    systemPrompt: `You are taking a PhD-level multiple choice science exam. You must respond in this EXACT JSON format and nothing else:
+    // STRICTLY HONEST MODEL MAPPING
+    arenaModels: [
+        { id: "google/gemini-3.1-pro", name: "Gemini 3.1 Pro" },
+        { id: "google/gemini-1.5-pro-latest", name: "Gemini 1.5 Pro" },
+        { id: "openai/gpt-4o", name: "GPT-4o (Flagship)" },
+        { id: "anthropic/claude-3-opus", name: "Claude 3 Opus (Flagship)" },
+        { id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku (Fast)" },
+        { id: "meta-llama/llama-3-70b-instruct", name: "Llama 3 70B" }
+    ],
+    systemPrompt: `You are taking a PhD-level multiple choice science exam (GPQA Diamond). You must respond in this EXACT JSON format and nothing else:
 {
   "thinking": "Step 1...",
   "answer": "A",
-  "confidence": 87,
   "reasoning": "..."
 }`
 };
+
+function getStrictFallbacks() {
+    return [
+        { subject: "Physics", question: "In Quantum Chromodynamics (QCD), what happens to the strong coupling constant as the momentum transfer (Q^2) approaches infinity?", correct_letter: "C", explanation: "Asymptotic freedom.", options: {A: "It diverges to infinity", B: "It oscillates unpredictably", C: "It asymptotically approaches zero", D: "It stabilizes at the fine-structure constant"}},
+        { subject: "Chemistry", question: "Which transition metal complex exhibits the strongest Jahn-Teller distortion?", correct_letter: "B", explanation: "High-spin d4 or d9 octahedral complexes exhibit the strongest Jahn-Teller distortions.", options: {A: "d3 octahedral", B: "d9 octahedral", C: "d5 high-spin octahedral", D: "d8 square planar"}},
+        { subject: "Biology", question: "During CRISPR-Cas9 genome editing, what specific DNA repair mechanism is primarily responsible for generating gene knockouts via targeted indels?", correct_letter: "D", explanation: "NHEJ is error-prone and causes indels.", options: {A: "Homology-Directed Repair (HDR)", B: "Mismatch Repair (MMR)", C: "Base Excision Repair (BER)", D: "Non-Homologous End Joining (NHEJ)"}},
+        { subject: "Physics", question: "According to the AdS/CFT correspondence, a theory of quantum gravity in Anti-de Sitter (AdS) space is dual to what type of theory on its boundary?", correct_letter: "A", explanation: "Conformal Field Theory.", options: {A: "A Conformal Field Theory (CFT) without gravity", B: "A String Theory with 11 dimensions", C: "A Loop Quantum Gravity (LQG) framework", D: "A classical thermodynamic system"}},
+        { subject: "Chemistry", question: "In total synthesis, what is the primary purpose of a Sharpless asymmetric epoxidation?", correct_letter: "C", explanation: "It converts primary/secondary allylic alcohols into epoxy alcohols.", options: {A: "Cleavage of vicinal diols", B: "Reduction of alkynes to trans-alkenes", C: "Enantioselective epoxidation of allylic alcohols", D: "Coupling of aryl halides with boronic acids"}},
+        { subject: "Biology", question: "Which class of transposable elements utilizes a 'copy and paste' mechanism requiring a reverse transcriptase intermediate?", correct_letter: "A", explanation: "Class I retrotransposons use RNA intermediates.", options: {A: "Class I (Retrotransposons)", B: "Class II (DNA Transposons)", C: "Insertion Sequences (IS)", D: "Miniature Inverted-repeat Transposable Elements (MITEs)"}}
+    ];
+}
 
 function scoreAnswer(modelAnswerStr, correctLetter) {
     try {
@@ -32,112 +50,56 @@ function scoreAnswer(modelAnswerStr, correctLetter) {
         return {
             correct: parsed.answer?.trim().toUpperCase().charAt(0) === correctLetter,
             answer: parsed.answer || "N/A",
-            confidence: parsed.confidence || 0,
             thinking: parsed.thinking || "...",
             reasoning: parsed.reasoning || ""
         };
     } catch (e) {
-        return { correct: false, answer: "ERR", confidence: 0, thinking: "Parse Error", reasoning: "" };
+        return { correct: false, answer: "ERR", thinking: "Parse Error", reasoning: "" };
     }
 }
 
-async function callOpenRouter(modelId, prompt, retries = 1) {
-    if (!modelId) return JSON.stringify({ answer: "ERR" });
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), 15000);
+async function callOpenRouter(modelId, prompt) {
     try {
         const res = await fetch(config.openRouterUrl, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${config.apiKey}`,
-                'HTTP-Referer': 'http://localhost:3000',
-                'X-Title': 'PhD Showdown',
-                'Content-Type': 'application/json'
-            },
-            signal: controller.signal,
+            headers: { 'Authorization': `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: modelId,
                 messages: [{ role: 'system', content: config.systemPrompt }, { role: 'user', content: prompt }]
             })
         });
-        clearTimeout(id);
         const data = await res.json();
         return data.choices[0].message.content;
     } catch (err) {
-        clearTimeout(id);
-        if (retries > 0) return callOpenRouter(modelId, prompt, retries - 1);
         return JSON.stringify({ answer: "ERR" });
     }
-}
-
-async function runSingleQuestion(q) {
-    const prompt = `Subject: ${q.subject}\nQuestion: ${q.question}\nA) ${q.options.A}\nB) ${q.options.B}\nC) ${q.options.C}\nD) ${q.options.D}`;
-    const [claudeRes, gptRes] = await Promise.allSettled([
-        callOpenRouter(config.models.claude.id, prompt),
-        callOpenRouter(config.models.gpt.id, prompt)
-    ]);
-    return {
-        claude: scoreAnswer(claudeRes.value, q.correct_letter),
-        gpt: scoreAnswer(gptRes.value, q.correct_letter)
-    };
-}
-
-function getStrictFallbacks() {
-    return [
-        { subject: "Physics", question: "What is the primary implication of Bell's Theorem?", correct_letter: "A", explanation: "Non-locality.", options: {A: "Non-local hidden variables", B: "Faster than light travel", C: "Cat states", D: "Measurement error"}},
-        { subject: "Physics", question: "Hawking radiation is caused by?", correct_letter: "C", explanation: "Quantum effects near horizon.", options: {A: "Black hole explosion", B: "Nuclear fusion", C: "Quantum fluctuations at horizon", D: "Dark matter decay"}},
-        { subject: "Physics", question: "The Casimir effect is a manifestation of?", correct_letter: "D", options: {A: "Gravity", B: "Strong force", C: "Relativity", D: "Vacuum energy"}},
-        { subject: "Physics", question: "What defines a topological insulator?", correct_letter: "D", options: {A: "Vacuum", B: "Superconductor", C: "Metal", D: "Insulating bulk, conducting surface"}},
-        { subject: "Chemistry", question: "Identify the strongest Bronsted acid.", correct_letter: "A", options: {A: "HClO4", B: "H2SO4", C: "HCl", D: "HNO3"}},
-        { subject: "Chemistry", question: "What is the byproduct of the Haber process?", correct_letter: "B", options: {A: "Nitrogen", B: "Ammonia", C: "Nitric Acid", D: "Hydrogen"}},
-        { subject: "Biology", question: "Which enzyme relieves torsional strain?", correct_letter: "C", options: {A: "Helicase", B: "Primase", C: "DNA Gyrase", D: "Ligase"}},
-        { subject: "Biology", question: "What removes introns from pre-mRNA?", correct_letter: "B", options: {A: "Ribosome", B: "Spliceosome", C: "Polymerase", D: "Ligase"}},
-        { subject: "Biology", question: "Function of CRISPR in bacteria?", correct_letter: "D", options: {A: "Respiration", B: "Division", C: "Folding", D: "Adaptive immunity"}},
-        { subject: "Biology", question: "Reverse transcriptase creates?", correct_letter: "A", options: {A: "DNA from RNA", B: "RNA from DNA", C: "Protein", D: "Lipids"}}
-    ];
-}
-
-async function fetchQuestions(topic, count) {
-    let combined = getStrictFallbacks();
-    let finalSelection = [];
-
-    if (topic && topic !== 'Random') {
-        finalSelection = combined.filter(q => q.subject.toLowerCase() === topic.toLowerCase());
-    } else {
-        finalSelection = combined;
-    }
-
-    return finalSelection.sort(() => Math.random() - 0.5).slice(0, count);
 }
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/api/questions', (req, res) => {
+    const topic = req.query.topic || 'Random';
+    let bank = getStrictFallbacks();
+    let filtered = topic === 'Random' ? bank : bank.filter(q => q.subject === topic);
+    res.json({ success: true, questions: filtered.sort(() => Math.random() - 0.5) });
 });
 
-app.get('/api/questions', async (req, res) => {
-    try {
-        const topic = req.query.topic || 'Random';
-        // Battle Mode (Random) gets 10, Interactive gets 5
-        const count = (topic === 'Random') ? 10 : 5;
-        const questions = await fetchQuestions(topic, count);
-        res.json({ success: true, questions });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
+app.get('/api/models', (req, res) => res.json({ success: true, models: config.arenaModels }));
 
 app.post('/api/ask-models', async (req, res) => {
-    try {
-        const { question } = req.body;
-        const results = await runSingleQuestion(question);
-        res.json({ success: true, results });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+    const { question } = req.body;
+    const prompt = `Subject: ${question.subject}\nQuestion: ${question.question}\nA) ${question.options.A}\nB) ${question.options.B}\nC) ${question.options.C}\nD) ${question.options.D}`;
+    const [claudeRes, gptRes] = await Promise.all([callOpenRouter(config.models.claude.id, prompt), callOpenRouter(config.models.gpt.id, prompt)]);
+    res.json({ success: true, results: { claude: scoreAnswer(claudeRes, question.correct_letter), gpt: scoreAnswer(gptRes, question.correct_letter) }});
 });
 
-export default app;
+app.post('/api/battle', async (req, res) => {
+    const { modelAId, modelBId, question } = req.body;
+    const prompt = `Subject: ${question.subject}\nQuestion: ${question.question}\nA) ${question.options.A}\nB) ${question.options.B}\nC) ${question.options.C}\nD) ${question.options.D}`;
+    const [resA, resB] = await Promise.all([callOpenRouter(modelAId, prompt), callOpenRouter(modelBId, prompt)]);
+    res.json({ success: true, results: { modelA: scoreAnswer(resA, question.correct_letter), modelB: scoreAnswer(resB, question.correct_letter) }});
+});
+
+app.listen(3000, () => console.log(`🚀 Server on http://localhost:3000`));

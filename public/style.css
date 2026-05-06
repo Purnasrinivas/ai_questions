@@ -304,6 +304,7 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     color: white;
     font-size: 18px;
     text-align: center;
+    text-transform: uppercase;
     outline: none;
     transition: 0.3s;
 }
